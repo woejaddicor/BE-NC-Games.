@@ -3,6 +3,7 @@ const app = require('../app');
 const db = require('../db/connection.js');
 const testData = require('../db/data/test-data/index.js');
 const  seed  = require('../db/seeds/seed.js');
+// const {toBeSortedBy} = require('jest-sorted');
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
@@ -40,7 +41,7 @@ describe('#get/api/categories', () => {
                    category: expect.any(String),
                    review_img_url: expect.any(String),
                    created_at: expect.any(String),
-                   votes: expect.any(String),
+                   votes: expect.any(Number),
                    comment_count: expect.any(String)
             })
         })
@@ -56,7 +57,7 @@ describe('#patch/api/reviews/:review_id', () => {
         .expect(202)
         .then((res) => {
             expect(res.body.msg).toBe('Accepted');
-            expect(res.body.vote[0].votes).toBe('17');
+            expect(res.body.vote[0].votes).toBe(17);
         })
     })
 })
@@ -75,7 +76,7 @@ describe('#get/api/reviews', () => {
                     category: expect.any(String),
                     review_img_url: expect.any(String),
                     created_at: expect.any(String),
-                    votes: expect.any(String),
+                    votes: expect.any(Number),
                     comment_count: expect.any(String) 
                 })
             })
@@ -86,11 +87,36 @@ describe('#get/api/reviews', () => {
         .get('/api/reviews?sort_by=votes')
         .expect(200)
         .then((res) => {
-            console.log(res.body.reviews);
-            expect(res.body.reviews).toBeSortedBy('votes')
+            expect(res.body.reviews).toBeSortedBy('votes', {descending: true})
         })  
+    })
+    test('Should return 200 and all reviews sorted in custom order asc or desc', () => {
+        return request(app)
+        .get('/api/reviews?order=DESC')
+        .expect(200)
+        .then((res) => {
+            expect(res.body.reviews).toBeSortedBy('created_at', {descending: true})
+        })
+    })
+    test('Should return reviews filtered by specified query category', () => {
+        return request(app)
+        .get('/api/reviews?category=social_deduction')
+        .expect(200)
+        .then((res) => {
+            res.body.reviews.forEach((review) => {
+                expect(review.category).toBe('social deduction');
+            })
+        })
     })
 })
 
-// expect(res.body.reviews[0].votes).toBeLessThanOrEqual(
-//     res.body.reviews[5].votes
+describe('#get/api/reviews/:review_id/comments', () => {
+    test('Should respond with an array of comments for a given user id', () => {
+        return request(app)
+        .get('/api/reviews/2/comments')
+        .expect(200)
+        .then((res) => {
+            console.log(res);
+        })
+    })
+})

@@ -14,5 +14,6 @@ SELECT reviews.*, COUNT(comment_id)
 AS comment_count FROM reviews
 FULL OUTER JOIN comments
 ON reviews.review_id = comments.review_id
+WHERE reviews.category = 'strategy'
 GROUP BY reviews.review_id
-ORDER BY title ASC;
+ORDER BY votes ASC;

@@ -39,7 +39,7 @@ const seed = (data) => {
         review_body TEXT NOT NULL,
         designer VARCHAR(1000),
         review_img_url VARCHAR(1000) DEFAULT 'https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg',
-        votes NUMERIC DEFAULT 0,
+        votes INT DEFAULT 0,
         category VARCHAR(1000) REFERENCES categories(slug),
         owner VARCHAR(1000) REFERENCES users(username),
         created_at TIMESTAMP

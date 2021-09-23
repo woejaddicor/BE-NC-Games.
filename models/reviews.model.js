@@ -1,3 +1,4 @@
+const { query } = require('../db/connection');
 const db = require('../db/connection');
 
 exports.fetchReview = (review_id) => {
@@ -15,8 +16,19 @@ exports.reviewUpdater = (newVotes, voteToUpdate) => {
     })
 }
 
-exports.fetchAllReviews = (sort_by) => {
-    return db.query(`SELECT reviews.*, COUNT(comment_id) AS comment_count FROM reviews FULL OUTER JOIN comments ON reviews.review_id = comments.review_id GROUP BY reviews.review_id ORDER BY $1 ASC;`, [sort_by]).then((results) => {
+exports.fetchAllReviews = (sort_by = 'created_at', order = 'desc', category) => {
+   
+    let queryStr = `SELECT reviews.*, COUNT(comment_id) AS comment_count FROM reviews FULL OUTER JOIN comments ON reviews.review_id = comments.review_id`;
+
+    if (category) {
+        queryStr += ` WHERE reviews.category = '${category}'`
+    }
+    
+    if (sort_by, order) {
+        queryStr += ` GROUP BY reviews.review_id ORDER BY ${sort_by} ${order}`;
+    }
+
+    return db.query(queryStr).then((results) => {
         return results.rows;
     })
 }
