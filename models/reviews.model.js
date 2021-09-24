@@ -32,3 +32,14 @@ exports.fetchAllReviews = (sort_by = 'created_at', order = 'desc', category) => 
         return results.rows;
     })
 }
+
+exports.fetchReviewIdComments = (review_id) => {
+   return db.query(`SELECT comments.* FROM reviews
+   FULL OUTER JOIN comments
+   ON reviews.review_id = comments.review_id
+   WHERE reviews.review_id = $1
+   GROUP BY comments.comment_id
+   ORDER BY comments.review_id;`, [review_id]).then((results) => {
+        return results.rows;
+   })
+}

@@ -110,13 +110,41 @@ describe('#get/api/reviews', () => {
     })
 })
 
+// describe('#get/api/comments/:review_id', () => {
+//     test('Should respond with an array of comments for a given user id', () => {
+//         return request(app)
+//         .get('/api/comments/3')
+//         .expect(200)
+//         .then((res) => {
+//             expect(res.body.comments).toHaveLength(3)
+//             expect(res.body.comments[0].review_id).toBe(3);
+//         })
+//     })
+// })
+
 describe('#get/api/reviews/:review_id/comments', () => {
     test('Should respond with an array of comments for a given user id', () => {
         return request(app)
-        .get('/api/reviews/2/comments')
+        .get('/api/reviews/3/comments')
         .expect(200)
         .then((res) => {
-            console.log(res);
+            expect(res.body.comments).toHaveLength(3);
+            res.body.comments.forEach((comment) => {
+                expect(comment.review_id).toBe(3)
+                expect(comment).toMatchObject({
+                    comment_id: expect.any(Number),
+                    votes: expect.any(Number),
+                    created_at: expect.any(String),
+                    author: expect.any(String),
+                    body: expect.any(String)
+                })
+            })     
         })
+    })
+})
+
+describe('#post/api/reviews/:review_id/comments', () => {
+    test('', () => {
+
     })
 })

@@ -52,7 +52,7 @@ const seed = (data) => {
         comment_id SERIAL PRIMARY KEY,
         author VARCHAR(1000) REFERENCES users(username),
         review_id INT REFERENCES reviews(review_id),
-        votes NUMERIC DEFAULT 0,
+        votes INT DEFAULT 0,
         created_at TIMESTAMP,
         body TEXT
       );

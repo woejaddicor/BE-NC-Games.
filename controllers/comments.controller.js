@@ -1,7 +1,8 @@
-const fetchComments = require('../models/comments.model')
+const {fetchComments} = require('../models/comments.model')
 
 exports.getCommentsByReviewer = (req, res, next) => {
-    fetchComments().then((comments) => {
+    const {review_id} = req.params;
+    fetchComments(review_id).then((comments) => {
         res.status(200).send({comments: comments})
     })
 }
