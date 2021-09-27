@@ -14,7 +14,7 @@ exports.updateReview = (req, res, next) => {
     const newVotes = req.body.inc_votes;
     const voteToUpdate = req.params.review_id;
     reviewUpdater(newVotes, voteToUpdate).then((updateVote) => {
-        res.status(202).send({msg: 'Accepted', vote: updateVote})
+        res.status(200).send({msg: 'Accepted', vote: updateVote})
     })
     .catch((err) => {
         next(err);

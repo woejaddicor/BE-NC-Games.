@@ -1,3 +1,4 @@
+const { getReviewIdComments } = require('../controllers/reviews.controller');
 const { query } = require('../db/connection');
 const db = require('../db/connection');
 
@@ -20,7 +21,6 @@ exports.fetchReview = (review_id) => {
 exports.reviewUpdater = (newVotes, voteToUpdate) => {
     return db.query(`UPDATE reviews SET votes = votes + $1 WHERE review_id = $2 RETURNING*;`, [newVotes, voteToUpdate]).then((results) => {
         const review = results.rows;
-        console.log(review);
         if (review.length === 0) {
             return Promise.reject({
                 status: 404,
@@ -32,7 +32,25 @@ exports.reviewUpdater = (newVotes, voteToUpdate) => {
 }
 
 exports.fetchAllReviews = (sort_by = 'created_at', order = 'desc', category) => {
-   
+    
+    const validColumns = ['review_id', 'title', 'review_body', 'designer', 'review_img_url', 'votes', 'category', 'owner', 'created_at'];
+
+    const validCategories = ['strategy', 'dexterity', 'hidden-roles', 'push-your-luck', 'deck-building', 'engine-building', 'roll-and-write', 'social_deduction'];
+
+    if (sort_by != null && !validColumns.includes(sort_by)) {
+        return Promise.reject({
+            status: 400,
+            msg: `sort_by: ${sort_by} is invalid`, 
+        })
+    }
+
+    if(category != null && !validCategories.includes(category)) {
+        return Promise.reject({
+            status: 400,
+            msg: `category: ${category} is invalid`,
+        })
+    }
+
     let queryStr = `SELECT reviews.*, COUNT(comment_id) AS comment_count FROM reviews FULL OUTER JOIN comments ON reviews.review_id = comments.review_id`;
 
     if (category) {
@@ -55,18 +73,28 @@ exports.fetchReviewIdComments = (review_id) => {
    WHERE reviews.review_id = $1
    GROUP BY comments.comment_id
    ORDER BY comments.review_id;`, [review_id]).then((results) => {   
-        return results.rows;
+        const reviewIdComments = results.rows;
+        if (reviewIdComments.length === 0) {
+            return Promise.reject({
+                status: 404,
+                msg: `review_id: ${review_id} is invalid`,
+            })
+        }
+        return reviewIdComments;
    })
 }
 
 // exports.postComment = (newComment) => {
-//     // const newCommentArray = [
-//     //     newComment.author,
-//     //     newComment.body
-//     // ]
+//     const newCommentArray = [
+//         newComment.author,
+//         newComment.body
+//     ];
 
-//     return db.query(`INSERT INTO comments (author, body) VALUES (${newComment.author}, ${newComment.body}) RETURNING*;`, newCommentArray).then((results) => {
+//     return db.query(`INSERT INTO reviews (owner, body) 
+//     SELECT * FROM reviews INNER JOIN comments ON reviews.review_id = comments.review_id
+//     RETURNING*;`, newCommentArray).then((results) => {
 //         console.log(results.rows);
 //         // return results.rows[0];
 //     })
 // }
+
