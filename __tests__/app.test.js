@@ -3,7 +3,7 @@ const app = require('../app');
 const db = require('../db/connection.js');
 const testData = require('../db/data/test-data/index.js');
 const  seed  = require('../db/seeds/seed.js');
-// const {toBeSortedBy} = require('jest-sorted');
+const express = require('express');
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
@@ -29,11 +29,11 @@ describe('#get/api/categories', () => {
   describe('#get/api/reviews/review_id', () => {
       test('Should return 200 and a review object', () => {
         return request(app)
-        .get('/api/reviews/1')
+        .get('/api/reviews/2')
         .expect(200)
         .then((res) => {
             expect(res.body).toBeInstanceOf(Object);
-            expect(res.body.review[0].review_id).toBe(1)
+            expect(res.body.review[0].review_id).toBe(2)
             expect(res.body.review[0]).toMatchObject({
                    owner: expect.any(String),
                    title: expect.any(String),
@@ -46,6 +46,22 @@ describe('#get/api/categories', () => {
             })
         })
     })
+    test("Should return 400 and bad request if sent an invalid id", () => {
+        return request(app)
+          .get("/api/reviews/nope")
+          .expect(400)
+          .then((res) => {
+            expect(res.body.msg).toBe("Bad Request");
+          });
+      });
+      test('Should return 404 custom error if id is in valid format but non-existent', () => {
+          return request(app)
+          .get('/api/reviews/55554')
+          .expect(404)
+          .then((res) => {
+              expect(res.body.msg).toBe('No review found for review_id: 55554')
+          })
+      })
 })
 
 describe('#patch/api/reviews/:review_id', () => {
@@ -58,6 +74,22 @@ describe('#patch/api/reviews/:review_id', () => {
         .then((res) => {
             expect(res.body.msg).toBe('Accepted');
             expect(res.body.vote[0].votes).toBe(17);
+        })
+    })
+    test("Should return 400 and bad request if sent an invalid id to update", () => {
+        return request(app)
+          .patch("/api/reviews/updatehacker")
+          .expect(400)
+          .then((res) => {
+            expect(res.body.msg).toBe("Bad Request");
+          });
+      });
+      test('Should return 404 custom error if id is in valid format but non-existent', () => {
+        return request(app)
+        .patch('/api/reviews/2000')
+        .expect(404)
+        .then((res) => {
+            expect(res.body.msg).toBe('No review found for review_id: 2000')
         })
     })
 })
@@ -110,17 +142,17 @@ describe('#get/api/reviews', () => {
     })
 })
 
-// describe('#get/api/comments/:review_id', () => {
-//     test('Should respond with an array of comments for a given user id', () => {
-//         return request(app)
-//         .get('/api/comments/3')
-//         .expect(200)
-//         .then((res) => {
-//             expect(res.body.comments).toHaveLength(3)
-//             expect(res.body.comments[0].review_id).toBe(3);
-//         })
-//     })
-// })
+describe('#get/api/comments/:review_id', () => {
+    test('Should respond with an array of comments for a given user id', () => {
+        return request(app)
+        .get('/api/comments/3')
+        .expect(200)
+        .then((res) => {
+            expect(res.body.comments).toHaveLength(3)
+            expect(res.body.comments[0].review_id).toBe(3);
+        })
+    })
+})
 
 describe('#get/api/reviews/:review_id/comments', () => {
     test('Should respond with an array of comments for a given user id', () => {
@@ -143,8 +175,26 @@ describe('#get/api/reviews/:review_id/comments', () => {
     })
 })
 
-describe('#post/api/reviews/:review_id/comments', () => {
-    test('', () => {
+// describe('#post/api/reviews/:review_id/comments', () => {
+//     test('Should post a new comment for a given user and return that posted comment', () => {
+//         const newComment = {author: 'jessjelly', body: 'This is indeed a game'} 
+//         return request(app)
+//         .post('/api/reviews/3/comments')
+//         .send(newComment)
+//         .expect(201)
+//         .then((res) => {
+//             console.log(res.body);
+//         })
+//     })
+// })
 
-    })
-})
+// describe('ANY/ Invalid URL', () => {
+//     test('404: non existent, invalid URL', () => {
+//         return request(app)
+//         .get('/invalid_url')
+//         .expect(404)
+//         .then((res) => {
+//             expect(res.body.msg).toBe('Invalid URL');
+//         })
+//     })
+// })
