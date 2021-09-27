@@ -4,7 +4,7 @@ const db = require('../db/connection');
 
 exports.fetchReview = (review_id) => {
     return db.query(`SELECT reviews.*, COUNT(comment_id) AS comment_count FROM reviews
-    FULL OUTER JOIN comments ON reviews.review_id = comments.review_id 
+    LEFT JOIN comments ON reviews.review_id = comments.review_id 
     WHERE reviews.review_id = $1
     GROUP BY reviews.review_id;`, [review_id]).then((result) => {
         const review = result.rows;
@@ -35,9 +35,18 @@ exports.fetchAllReviews = (sort_by = 'created_at', order = 'desc', category) => 
     
     const validColumns = ['review_id', 'title', 'review_body', 'designer', 'review_img_url', 'votes', 'category', 'owner', 'created_at'];
 
-    const validCategories = ['strategy', 'dexterity', 'hidden-roles', 'push-your-luck', 'deck-building', 'engine-building', 'roll-and-write', 'social_deduction'];
+    const validOrders = ['asc', 'desc', 'ASC', 'DESC']
 
-    if (sort_by != null && !validColumns.includes(sort_by)) {
+    const validCategories = ['strategy', 'dexterity', 'hidden-roles', 'push-your-luck', 'deck-building', 'engine-building', 'roll-and-write', 'social_deduction'];
+    
+        if (order !== null && !validOrders.includes(order)){
+            return Promise.reject({
+                status: 400,
+                msg: 'Invalid sort order',
+            });
+        }
+
+    if (sort_by != null && !validColumns.includes(sort_by) && order) {
         return Promise.reject({
             status: 400,
             msg: `sort_by: ${sort_by} is invalid`, 
@@ -51,7 +60,7 @@ exports.fetchAllReviews = (sort_by = 'created_at', order = 'desc', category) => 
         })
     }
 
-    let queryStr = `SELECT reviews.*, COUNT(comment_id) AS comment_count FROM reviews FULL OUTER JOIN comments ON reviews.review_id = comments.review_id`;
+    let queryStr = `SELECT reviews.*, COUNT(comment_id) AS comment_count FROM reviews LEFT JOIN comments ON reviews.review_id = comments.review_id`;
 
     if (category) {
         queryStr += ` WHERE reviews.category = '${category}'`

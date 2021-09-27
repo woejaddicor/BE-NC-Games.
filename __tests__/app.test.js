@@ -81,7 +81,7 @@ describe('#patch/api/reviews/:review_id', () => {
           .patch('/api/reviews/invalid')
           .expect(400)
           .then((res) => {
-            expect(res.body.msg).toBe("Bad Request");
+            expect(res.body.msg).toBe('Bad Request');
           });
       });
       test('Should return 404 custom error if id is in valid format but non-existent', () => {
@@ -92,16 +92,16 @@ describe('#patch/api/reviews/:review_id', () => {
             expect(res.body.msg).toBe('No review found for review_id: 2000')
         })
     })
-    // test('Should return 400 if request body is incorrect', () => {
-    //     const newVotes = {inc_votes: 'hehe'}
-    //     return request(app)
-    //     .patch('/api/reviews/4')
-    //     .send(newVotes)
-    //     .expect(400)
-    //     .then((res) => {
-    //         expect(res.body.msg).toBe('Error- incorrect format')
-    //     })
-    // })
+    test('Should return 400 if request body is incorrect', () => {
+        const newVotes = {inc_votes: 'hehe'}
+        return request(app)
+        .patch('/api/reviews/4')
+        .send(newVotes)
+        .expect(400)
+        .then((res) => {
+            expect(res.body.msg).toBe('Bad Request')
+        })
+    })
 })
 
 describe('#get/api/reviews', () => {
@@ -146,6 +146,15 @@ describe('#get/api/reviews', () => {
         .expect(200)
         .then((res) => {
             expect(res.body.reviews).toBeSortedBy('created_at', {descending: true})
+        })
+    })
+    test('Should return 200 error if incorrect order is entered', () => {
+        return request(app)
+        .get('/api/reviews?order=bananas')
+        .expect(400)
+        .then((res) => {
+            console.log(res.body)
+            expect(res.body.msg).toBe('Invalid sort order');
         })
     })
     test('Should return reviews filtered by specified query category', () => {
