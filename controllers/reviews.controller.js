@@ -42,12 +42,12 @@ exports.getReviewIdComments = (req, res, next) => {
     })
 }
 
-// exports.postNewComment = (req, res, next) => {
-//     const newComment = req.body;
-//     postComment(newComment).then((comment) => {
-//         res.status(201).send({comment: comment})
-//     })
-//     .catch((err) => {
-//         next(err);
-//     })
-// }
+exports.postNewComment = (req, res, next) => {
+    const newComment = req.body;
+    postComment(newComment).then((comment) => {
+        res.status(201).send({comment: comment})
+    })
+    .catch((err) => {
+        next(err);
+    })
+}

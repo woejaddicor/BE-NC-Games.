@@ -93,17 +93,17 @@ exports.fetchReviewIdComments = (review_id) => {
    })
 }
 
-// exports.postComment = (newComment) => {
-//     const newCommentArray = [
-//         newComment.author,
-//         newComment.body
-//     ];
+exports.postComment = (newComment) => {
+    const newCommentArray = [
+        newComment.author,
+        newComment.body
+    ];
 
-//     return db.query(`INSERT INTO reviews (owner, body) 
-//     SELECT * FROM reviews INNER JOIN comments ON reviews.review_id = comments.review_id
-//     RETURNING*;`, newCommentArray).then((results) => {
-//         console.log(results.rows);
-//         // return results.rows[0];
-//     })
-// }
+    return db.query(`INSERT INTO comments (comment_id, author, review_id, votes, created_at,  body) 
+    SELECT * FROM reviews INNER JOIN comments ON reviews.review_id = comments.review_id
+    RETURNING*;`, newCommentArray).then((results) => {
+        // console.log(results.rows);
+        return results.rows[0];
+    })
+}
 

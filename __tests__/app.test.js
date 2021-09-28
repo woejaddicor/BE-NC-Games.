@@ -153,7 +153,6 @@ describe('#get/api/reviews', () => {
         .get('/api/reviews?order=bananas')
         .expect(400)
         .then((res) => {
-            console.log(res.body)
             expect(res.body.msg).toBe('Invalid sort order');
         })
     })
@@ -226,18 +225,18 @@ describe('#get/api/reviews/:review_id/comments', () => {
     })
 })
 
-// describe('#post/api/reviews/:review_id/comments', () => {
-//     test('Should post a new comment for a given user and return that posted comment', () => {
-//         const newComment = {author: 'jessjelly', body: 'hey'} 
-//         return request(app)
-//         .post('/api/reviews/3/comments')
-//         .send(newComment)
-//         .expect(201)
-//         .then((res) => {
-//             console.log(res.body);
-//         })
-//     })
-// })
+describe('#post/api/reviews/:review_id/comments', () => {
+    test('Should post a new comment for a given user and return that posted comment', () => {
+        const newComment = {author: 'jessjelly', body: 'hey'} 
+        return request(app)
+        .post('/api/reviews/3/comments')
+        .send(newComment)
+        .expect(201)
+        .then((res) => {
+            console.log(res.body);
+        })
+    })
+})
 
 describe('ANY/ Invalid URL', () => {
     test('404: non existent, invalid URL', () => {

@@ -33,3 +33,9 @@ SELECT * FROM comments;
 -- ON reviews.review_id = comments.review_id
 -- RETURNING*;
 
+INSERT INTO comments
+(comment_id, author, review_id, votes, created_at, body) 
+SELECT comments.* FROM reviews
+LEFT JOIN comments
+ON reviews.review_id = comments.review_id
+RETURNING*;
