@@ -108,13 +108,6 @@ exports.postComment = (newComment, review_id) => {
         })
     }
     return db.query(`INSERT INTO comments (author, body, review_id) VALUES ($1, $2, $3) RETURNING*;`, [newComment.username, newComment.body, review_id.review_id]).then((results) => {
-        const postedReview = results.rows[0];
-        if (results.length === 0){
-            return Promise.reject({
-                status: 404,
-                msg: `review_id: ${review_id} does not exist`
-            })
-        }
-        return postedReview;
+        return results.rows[0];
     })
 }
