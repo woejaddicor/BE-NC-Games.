@@ -30,9 +30,10 @@
 -- WHERE review_id = 2
 -- RETURNING*;
 
-SELECT * FROM comments;
+-- SELECT * FROM comments;
 
-
+SELECT * FROM users
+WHERE username = 'cooljmessy';
 
 
 -- 

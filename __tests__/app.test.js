@@ -338,6 +338,38 @@ describe('#get/api/users', () => {
     })
 })
 
+describe('#get/api/users/:username', () => {
+    test('Should respond with a 200 and a user object for the given username', () => {
+        return request(app)
+        .get('/api/users/bainesface')
+        .expect(200)
+        .then((res) => {
+            expect(res.body.users.username).toBe('bainesface');
+            expect(res.body.users).toMatchObject({
+                username: expect.any(String),
+                avatar_url: expect.any(String),
+                name: expect.any(String)
+            })
+        })
+    })
+    test('Should respond with a 400 error if request contains invalid type of username', () => {
+        return request(app)
+        .get('/api/users/999')
+        .expect(400)
+        .then((res) => {
+            expect(res.body.msg).toBe('Invalid username type');
+        })
+    })
+    test('Should respond with a 404 if valid username type but not within database', () => {
+        return request(app)
+        .get('/api/users/dogface')
+        .expect(404)
+        .then((res) => {
+            expect(res.body.msg).toBe('username: undefined not found')
+        })
+    })
+})
+
 describe('ANY/ Invalid URL', () => {
     test('404: non existent, invalid URL', () => {
         return request(app)
