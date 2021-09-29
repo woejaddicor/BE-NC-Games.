@@ -84,7 +84,7 @@ exports.fetchAllReviews = (sort_by = 'created_at', order = 'desc', category) => 
 
 exports.fetchReviewIdComments = (review_id) => {
    return db.query(`SELECT comments.* FROM reviews
-   FULL OUTER JOIN comments
+   LEFT JOIN comments
    ON reviews.review_id = comments.review_id
    WHERE reviews.review_id = $1
    GROUP BY comments.comment_id
@@ -100,16 +100,21 @@ exports.fetchReviewIdComments = (review_id) => {
    })
 }
 
-exports.postComment = (newComment) => {
-    const newCommentArray = [
-        newComment.author,
-        newComment.body
-    ];
-
-    return db.query(`INSERT INTO comments (comment_id, author, review_id, votes, created_at,  body) 
-    INNER JOIN comments ON reviews.review_id = comments.review_id
-    RETURNING*;`, newCommentArray).then((results) => {
-        return results.rows[0];
+exports.postComment = (newComment, review_id) => {
+    if (typeof newComment.username !== 'string' || typeof newComment.body !== 'string'){
+        return Promise.reject({
+            status: 400,
+            msg: 'Invalid request body'
+        })
+    }
+    return db.query(`INSERT INTO comments (author, body, review_id) VALUES ($1, $2, $3) RETURNING*;`, [newComment.username, newComment.body, review_id.review_id]).then((results) => {
+        const postedReview = results.rows[0];
+        if (results.length === 0){
+            return Promise.reject({
+                status: 404,
+                msg: `review_id: ${review_id} does not exist`
+            })
+        }
+        return postedReview;
     })
 }
-

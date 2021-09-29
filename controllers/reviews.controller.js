@@ -44,7 +44,8 @@ exports.getReviewIdComments = (req, res, next) => {
 
 exports.postNewComment = (req, res, next) => {
     const newComment = req.body;
-    postComment(newComment).then((comment) => {
+    const review_id = req.params
+    postComment(newComment, review_id).then((comment) => {
         res.status(201).send({comment: comment})
     })
     .catch((err) => {

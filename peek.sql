@@ -3,7 +3,7 @@
 -- SELECT * FROM categories;
 -- SELECT * FROM users;
 -- SELECT * FROM reviews;
-SELECT * FROM comments;
+-- SELECT * FROM comments;
 
 -- SELECT reviews.*, COUNT(comment_id) AS comment_count FROM reviews
 -- FULL OUTER JOIN comments ON reviews.review_id = comments.review_id 
@@ -25,17 +25,14 @@ SELECT * FROM comments;
 -- GROUP BY comments.comment_id
 -- ORDER BY comments.review_id ASC;
 
--- SELECT * FROM comments;
-
 -- INSERT INTO comments (author, body)
--- SELECT comments.* FROM reviews
--- INNER JOIN comments
--- ON reviews.review_id = comments.review_id
+-- VALUES ('hey', 'there')
+-- WHERE review_id = 2
 -- RETURNING*;
 
-INSERT INTO comments
-(comment_id, author, review_id, votes, created_at, body) 
-SELECT comments.* FROM reviews
-LEFT JOIN comments
-ON reviews.review_id = comments.review_id
-RETURNING*;
+SELECT * FROM comments;
+
+
+
+
+-- 

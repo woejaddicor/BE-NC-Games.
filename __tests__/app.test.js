@@ -242,13 +242,70 @@ describe('#get/api/reviews/:review_id/comments', () => {
 
 describe('#post/api/reviews/:review_id/comments', () => {
     test('Should post a new comment for a given user and return that posted comment', () => {
-        const newComment = {author: 'jessjelly', body: 'hey'} 
+        const newComment = {username: 'bainesface', body: 'hey'} 
         return request(app)
-        .post('/api/reviews/3/comments')
+        .post('/api/reviews/2/comments')
         .send(newComment)
         .expect(201)
         .then((res) => {
-            console.log(res.body);
+            expect(res.body.comment).toMatchObject({
+                comment_id: expect.any(Number),
+                author: expect.any(String),
+                votes: expect.any(Number),
+                review_id: expect.any(Number),
+                created_at: expect.any(String),
+                body: expect.any(String)
+            })
+        })
+    })
+    test('Should return error 400 if an invalid id is entered', () => {
+        const newComment = {username: 'bainesface', body: 'hey'} 
+        return request(app)
+        .post('/api/reviews/invalid/comments')
+        .send(newComment)
+        .expect(400)
+        .then((res) => { 
+            expect(res.body.msg).toBe('Bad Request')
+        })
+    })
+    test('Should return 404 error if valid id type is entered but id does not exist', () => {
+        const newComment = {username: 'bainesface', body: 'hey'} 
+        return request(app)
+        .post('/api/reviews/2000/comments')
+        .send(newComment)
+        .expect(404)
+        .then((res) => { 
+            expect(res.body.msg).toBe('Bad Request')
+        }) 
+    })
+    test('Post requests with missing request body should return error 400', () => {
+        const newComment = {username: null}
+        return request(app)
+        .post('/api/reviews/4/comments')
+        .send(newComment)
+        .expect(400)
+        .then((res) => {
+            expect(res.body.msg).toBe('Invalid request body')
+        })
+    })
+    test('Post request with incorrect type request body should return 400 error', () => {
+        const newComment = {username: 55, body: false}
+        return request(app)
+        .post('/api/reviews/4/comments')
+        .send(newComment)
+        .expect(400)
+        .then((res) => {
+            expect(res.body.msg).toBe('Invalid request body')
+        }) 
+    })
+    test('Should respond with 404 error if request body username does not exist', () => {
+        const newComment = {username: 'Gary', body: 'I am trying to disrupt the data'}
+        return request(app)
+        .post('/api/reviews/5/comments')
+        .send(newComment)
+        .expect(404)
+        .then((res) => {
+            
         })
     })
 })
