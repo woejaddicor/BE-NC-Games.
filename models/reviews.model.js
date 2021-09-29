@@ -19,16 +19,23 @@ exports.fetchReview = (review_id) => {
 }
 
 exports.reviewUpdater = (newVotes, voteToUpdate) => {
-    return db.query(`UPDATE reviews SET votes = votes + $1 WHERE review_id = $2 RETURNING*;`, [newVotes, voteToUpdate]).then((results) => {
-        const review = results.rows;
-        if (review.length === 0) {
-            return Promise.reject({
-                status: 404,
-                msg: `No review found for review_id: ${voteToUpdate}`,
-            });
-        }
-        return review;
-    })
+    if (typeof newVotes !== 'number'){
+        return Promise.reject({
+            status: 400,
+            msg: 'Bad Request'
+        })
+    } else {
+        return db.query(`UPDATE reviews SET votes = votes + $1 WHERE review_id = $2 RETURNING*;`, [newVotes, voteToUpdate]).then((results) => {
+            const review = results.rows;
+            if (review.length === 0) {
+                return Promise.reject({
+                    status: 404,
+                    msg: `No review found for review_id: ${voteToUpdate}`,
+                });
+            }
+            return review;
+        })
+    }
 }
 
 exports.fetchAllReviews = (sort_by = 'created_at', order = 'desc', category) => {
@@ -100,9 +107,8 @@ exports.postComment = (newComment) => {
     ];
 
     return db.query(`INSERT INTO comments (comment_id, author, review_id, votes, created_at,  body) 
-    SELECT * FROM reviews INNER JOIN comments ON reviews.review_id = comments.review_id
+    INNER JOIN comments ON reviews.review_id = comments.review_id
     RETURNING*;`, newCommentArray).then((results) => {
-        // console.log(results.rows);
         return results.rows[0];
     })
 }

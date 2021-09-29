@@ -17,6 +17,7 @@ describe('#get/api/categories', () => {
           expect(Array.isArray(res.body.categories)).toBe(true);
           expect(res.body.categories.length).toBe(4);
           res.body.categories.forEach((category) => {
+            expect(Object.keys(category)).not.toHaveLength(0)
               expect(category).toMatchObject({
                   slug: expect.any(String),
                   description: expect.any(String)
@@ -85,15 +86,17 @@ describe('#patch/api/reviews/:review_id', () => {
           });
       });
       test('Should return 404 custom error if id is in valid format but non-existent', () => {
+        const newVotes = {inc_votes: 55} 
         return request(app)
         .patch('/api/reviews/2000')
+        .send(newVotes)
         .expect(404)
         .then((res) => {
             expect(res.body.msg).toBe('No review found for review_id: 2000')
         })
     })
     test('Should return 400 if request body is incorrect', () => {
-        const newVotes = {inc_votes: 'hehe'}
+        const newVotes = {inc_votes: '55'}
         return request(app)
         .patch('/api/reviews/4')
         .send(newVotes)
@@ -101,6 +104,16 @@ describe('#patch/api/reviews/:review_id', () => {
         .then((res) => {
             expect(res.body.msg).toBe('Bad Request')
         })
+    })
+    test('should return 400 if request body is missing', () => {
+        const newVotes = {inc_votes: null }
+        return request(app)
+        .patch('/api/reviews/4')
+        .send(newVotes)
+        .expect(400)
+        .then((res) => {
+            expect(res.body.msg).toBe('Bad Request')
+        }) 
     })
 })
 
@@ -111,6 +124,7 @@ describe('#get/api/reviews', () => {
         .expect(200)
         .then((res) => {
             res.body.reviews.forEach((review) => {
+                expect(Object.keys(review)).not.toHaveLength(0)
                 expect(review).toMatchObject({
                     owner: expect.any(String),
                     title: expect.any(String),
@@ -196,6 +210,7 @@ describe('#get/api/reviews/:review_id/comments', () => {
         .then((res) => {
             expect(res.body.comments).toHaveLength(3);
             res.body.comments.forEach((comment) => {
+                expect(Object.keys(comment)).not.toHaveLength(0)
                 expect(comment.review_id).toBe(3)
                 expect(comment).toMatchObject({
                     comment_id: expect.any(Number),

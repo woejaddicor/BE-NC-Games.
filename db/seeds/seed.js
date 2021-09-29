@@ -42,7 +42,7 @@ const seed = (data) => {
         votes INT DEFAULT 0,
         category VARCHAR(1000) REFERENCES categories(slug),
         owner VARCHAR(1000) REFERENCES users(username),
-        created_at TIMESTAMP
+        created_at TIMESTAMP DEFAULT NOW()
       );
       `)
     })
@@ -53,7 +53,7 @@ const seed = (data) => {
         author VARCHAR(1000) REFERENCES users(username),
         review_id INT REFERENCES reviews(review_id),
         votes INT DEFAULT 0,
-        created_at TIMESTAMP,
+        created_at TIMESTAMP DEFAULT NOW(),
         body TEXT
       );
       `)
