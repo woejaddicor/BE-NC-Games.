@@ -305,7 +305,35 @@ describe('#post/api/reviews/:review_id/comments', () => {
         .send(newComment)
         .expect(404)
         .then((res) => {
-            
+            expect(res.body.msg).toBe('Bad Request')
+        })
+    })
+})
+
+// describe('#get/api', () => {
+//     test('Should respond with 200 and a JSON with all the available endpoints in the DB', () => {
+//         return request(app)
+//         .get('/api')
+//         .expect(200)
+//         .then((res) => {
+//             console.log(res);
+//         })
+//     })
+// })
+
+describe('#get/api/users', () => {
+    test('Should respond with 200 and an array of objects with username property', () => {
+        return request(app)
+        .get('/api/users')
+        .expect(200)
+        .then((res) => {
+            expect(res.body.users).toHaveLength(4);
+            res.body.users.forEach((user) => {
+                expect(Object.keys(user)).not.toHaveLength(0);
+                expect(user).toMatchObject({
+                    username: expect.any(String)
+                })
+            })
         })
     })
 })

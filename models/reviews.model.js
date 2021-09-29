@@ -1,4 +1,3 @@
-const { getReviewIdComments } = require('../controllers/reviews.controller');
 const { query } = require('../db/connection');
 const db = require('../db/connection');
 
