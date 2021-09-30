@@ -190,14 +190,23 @@ describe('#get/api/reviews', () => {
     })
 })
 
-describe('#get/api/comments/:review_id', () => {
-    test('Should respond with an array of comments for a given user id', () => {
+describe('#get/api/comments', () => {
+    test('Should respond with an array of all comments', () => {
         return request(app)
-        .get('/api/comments/3')
+        .get('/api/comments')
         .expect(200)
         .then((res) => {
-            expect(res.body.comments).toHaveLength(3)
-            expect(res.body.comments[0].review_id).toBe(3);
+            res.body.comments.forEach((comment) => {
+                expect(Object.keys(comment)).not.toHaveLength(0);
+                expect(comment).toMatchObject({
+                    comment_id: expect.any(Number),
+                    author: expect.any(String),
+                    review_id: expect.any(Number),
+                    votes: expect.any(Number),
+                    created_at: expect.any(String),
+                    body: expect.any(String)
+                })
+            })
         })
     })
 })
@@ -316,7 +325,7 @@ describe('#get/api', () => {
         .get('/api')
         .expect(200)
         .then((res) => {
-           console.log(res.body)
+           
         })
     })
 })

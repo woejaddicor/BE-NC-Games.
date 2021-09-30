@@ -1,9 +1,9 @@
 {
   "GET /api": {
-    "description": "serves up a json representation of all the available endpoints of the api"
+    "description": "serves up a json representation of all the available endpoints within the api"
   },
   "GET /api/categories": {
-    "description": "serves an array of all categories",
+    "description": "Provides an array of all categories",
     "queries": [],
     "exampleResponse": {
       "categories": [
@@ -15,7 +15,7 @@
     }
   },
   "GET /api/reviews": {
-    "description": "serves an array of all reviews",
+    "description": "Provides an array of all reviews",
     "queries": ["category", "sort_by", "order"],
     "exampleResponse": {
       "reviews": [
@@ -29,6 +29,29 @@
           "votes": 5
         }
       ]
+    }
+  },
+  "GET /api/users": {
+    "description": "Provides an array of all users",
+    "queries": [], 
+    "exampleResponse": {
+      "users": [
+        {
+          "username": "grumpy19"
+        }
+      ]
+    }
+  },
+  "GET /api/comments": {
+    "description": "Provides an array of all comments",
+    "queries": [],
+    "exampleResponse": {
+      "comment_id": "6",
+      "author": "GarethGatesStan",
+      "review_id": "2",
+      "votes": "22",
+      "created_at": "4-4-2020",
+      "body": "I loved this game!!!"
     }
   }
 }
