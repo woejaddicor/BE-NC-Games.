@@ -1,6 +1,7 @@
 You are now connected to database "nc_games" as user "joewaddicor".
-  username  |           avatar_url            |    name     
-------------+---------------------------------+-------------
- cooljmessy | https://i.imgur.com/WfX0Neu.jpg | Peter Messy
+ comment_id |  author   | review_id | votes |       created_at       |            body             
+------------+-----------+-----------+-------+------------------------+-----------------------------
+          2 | tickle122 |         4 |    -7 | 2021-01-18 10:09:05.41 | My dog loved this game too!
 (1 row)
 
+UPDATE 1

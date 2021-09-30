@@ -1,4 +1,4 @@
-const {fetchComments} = require('../models/comments.model')
+const {fetchComments, patchCommentBbyId} = require('../models/comments.model')
 
 exports.getCommentsByReviewer = (req, res, next) => {
     const {review_id} = req.params;
@@ -9,3 +9,14 @@ exports.getCommentsByReviewer = (req, res, next) => {
         next(err)
     }
 )}
+
+exports.updateComment = (req, res, next) => {
+    const voteUpdate = req.body;
+    const commentToUpdate = req.params;
+    patchCommentBbyId(voteUpdate, commentToUpdate).then((comment) => {
+        res.status(200).send({comment: comment})
+    })
+    .catch((err) => {
+        next(err);
+    })
+}

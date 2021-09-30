@@ -370,6 +370,69 @@ describe('#get/api/users/:username', () => {
     })
 })
 
+describe('#patch/api/comments/:comment_id', () => {
+    test('Should return 200 and a comment object, updated to increase the vote count', () => {
+        const newVotes = {inc_votes: 10}
+        return request(app)
+        .patch('/api/comments/1')
+        .expect(200)
+        .send(newVotes)
+        .then((res) => {
+            expect(res.body.comment[0].votes).toBe(26);
+        })
+    })
+    test('Should return 200 and a comment object, updated to decrease the vote count', () => {
+        const newVotes = {inc_votes: -50}
+        return request(app)
+        .patch('/api/comments/2')
+        .expect(200)
+        .send(newVotes)
+        .then((res) => {
+            expect(res.body.comment[0].votes).toBe(-37);
+        })
+    })
+    test('Should return a 400 error if an invalid type of comment_id is entered', () => {
+        const newVotes = {inc_votes: -50}
+        return request(app)
+        .patch('/api/comments/notAnId')
+        .expect(400)
+        .send(newVotes)
+        .then((res) => {
+            expect(res.body.msg).toBe('Bad Request'); 
+        })
+    })
+    test('Should return 404 error if id type is valid but not found within the db', () => {
+        const newVotes = {inc_votes: -50}
+        return request(app)
+        .patch('/api/comments/9000')
+        .expect(404)
+        .send(newVotes)
+        .then((res) => {
+            expect(res.body.msg).toBe('comment_id: 9000 is not found')
+        }) 
+    })
+    test('Should return 400 error if the request body is in  incorrect type', () => {
+        const newVotes = {inc_votes: 'invalid'}
+        return request(app)
+        .patch('/api/comments/3')
+        .expect(400)
+        .send(newVotes)
+        .then((res) => {
+            expect(res.body.msg).toBe('Invalid request')
+        })  
+    })
+    test('Should return 400 error if the request body is missing', () => {
+        const newVotes = {inc_votes: null}
+        return request(app)
+        .patch('/api/comments/3')
+        .expect(400)
+        .send(newVotes)
+        .then((res) => {
+            expect(res.body.msg).toBe('Invalid request')
+        })  
+    })
+})
+
 describe('ANY/ Invalid URL', () => {
     test('404: non existent, invalid URL', () => {
         return request(app)
