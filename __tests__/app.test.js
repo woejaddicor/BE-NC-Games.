@@ -310,16 +310,16 @@ describe('#post/api/reviews/:review_id/comments', () => {
     })
 })
 
-// describe('#get/api', () => {
-//     test('Should respond with 200 and a JSON with all the available endpoints in the DB', () => {
-//         return request(app)
-//         .get('/api')
-//         .expect(200)
-//         .then((res) => {
-//             console.log(res);
-//         })
-//     })
-// })
+describe('#get/api', () => {
+    test('Should respond with 200 and a JSON with all the available endpoints in the DB', () => {
+        return request(app)
+        .get('/api')
+        .expect(200)
+        .then((res) => {
+            console.log(res);
+        })
+    })
+})
 
 describe('#get/api/users', () => {
     test('Should respond with 200 and an array of objects with username property', () => {
