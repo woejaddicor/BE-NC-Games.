@@ -6,6 +6,19 @@ exports.fetchComments = (review_id) => {
     })
 }
 
+exports.removeCommentById = (commentId) => {
+    return db.query(`DELETE FROM comments WHERE comment_id = $1 RETURNING*;`, [commentId.comment_id]).then((results) => {
+       const deletedComment = results.rows[0];
+       if (deletedComment === undefined) {
+           return Promise.reject({
+               status: 404,
+               msg: `comment_id: ${commentId.comment_id} not found`
+           })
+       }
+       return deletedComment;
+    })
+}
+
 exports.patchCommentBbyId = (voteUpdate, commentToUpdate) => {
     if (typeof voteUpdate.inc_votes !== 'number') {
         return Promise.reject({

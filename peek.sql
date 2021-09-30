@@ -32,7 +32,11 @@
 
 -- SELECT * FROM comments
 
-UPDATE comments
-SET votes = votes + -10
+-- UPDATE comments
+-- SET votes = votes + -10
+-- WHERE comment_id = 2
+-- RETURNING*;
+
+DELETE FROM comments
 WHERE comment_id = 2
 RETURNING*;

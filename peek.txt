@@ -4,4 +4,4 @@ You are now connected to database "nc_games" as user "joewaddicor".
           2 | tickle122 |         4 |    -7 | 2021-01-18 10:09:05.41 | My dog loved this game too!
 (1 row)
 
-UPDATE 1
+DELETE 1

@@ -1,4 +1,5 @@
-const {fetchComments, patchCommentBbyId} = require('../models/comments.model')
+const request = require('superagent');
+const {fetchComments, patchCommentBbyId, removeCommentById} = require('../models/comments.model')
 
 exports.getCommentsByReviewer = (req, res, next) => {
     const {review_id} = req.params;
@@ -9,6 +10,16 @@ exports.getCommentsByReviewer = (req, res, next) => {
         next(err)
     }
 )}
+
+exports.deleteComment = (req, res, next) => {
+    const commentId = req.params;
+    removeCommentById(commentId).then((msg) => {
+        res.status(204).send()
+    })
+    .catch((err) => {
+        next(err);
+    })
+}
 
 exports.updateComment = (req, res, next) => {
     const voteUpdate = req.body;

@@ -316,10 +316,38 @@ describe('#get/api', () => {
         .get('/api')
         .expect(200)
         .then((res) => {
-            console.log(res);
+           console.log(res.body)
         })
     })
 })
+
+describe('#delete/api/comments/:comment_id', () => {
+    test('Should respond with 204 status and deletes the given comment from the database', () => {
+        return request(app)
+        .delete('/api/comments/2')
+        .expect(204)
+        .then((res) => {
+            expect(Object.keys(res.body)).toHaveLength(0)
+        })
+    })
+    test('Should return error 400 if an invalid id type is entered to be deleted', () => {
+        return request(app)
+        .delete('/api/comments/dog')
+        .expect(400)
+        .then((res) => {
+            expect(res.body.msg).toBe('Bad Request');
+        })
+    })
+    test('Should respond with error 404 if id to be deleted is correct format but not present in db', () => {
+        return request(app)
+        .delete('/api/comments/2000')
+        .expect(404)
+        .then((res) => {
+            expect(res.body.msg).toBe('comment_id: 2000 not found')
+        })
+    })
+})
+
 
 describe('#get/api/users', () => {
     test('Should respond with 200 and an array of objects with username property', () => {
