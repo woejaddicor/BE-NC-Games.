@@ -53,7 +53,7 @@ const seed = (data) => {
         author VARCHAR(1000) REFERENCES users(username),
         review_id INT REFERENCES reviews(review_id) ON DELETE CASCADE,
         votes INT DEFAULT 0,
-        created_at TIMESTAMP DEFAULT NOW(),
+        created_at TIMESTAMP DEFAULT NOW() NOT NULL,
         body TEXT
       );
       `)
